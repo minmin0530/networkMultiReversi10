@@ -238,12 +238,14 @@ io.sockets.on("connection", function (socket) {
         io.sockets.connected[socketID[ tempRoom.fieldOwner ]].emit("currentTable", room.length - 1);      
       } else {
         socket.join(data.fieldOwner);
-        io.sockets.connected[socketID[ data.fieldOwner ]].emit("currentTable", i);
+        io.sockets.to(data.fieldOwner).emit("currentTable", i);
+//        io.sockets.connected[socketID[ data.fieldOwner ]].emit("currentTable", i);
       }
     });
 
     // 既にあるテーブルへ参加する
     socket.on("join", function(data) {
+      if (room.length <= data.fieldNumber) {console.log("deleted table"); return; }
       let sameFlag = false;
       for (const player of room[data.fieldNumber].players) {
         if (player == data.myName) {
